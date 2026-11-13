@@ -9,7 +9,7 @@ import '@fontsource/caveat/latin-700.css';
 import './styles.css';
 import logoUrl from '../images/logo.png';
 import introUrl from '../video/intro.mp4';
-import { showFullscreenAd } from './ads';
+import { preloadInterstitial, showFullscreenAd } from './ads';
 import { audio } from './audio';
 import { ROUNDS } from './content';
 import { showMenu } from './menu';
@@ -17,12 +17,15 @@ import { progress } from './progress';
 import { playRound } from './round';
 import { showTutorial } from './tutorial';
 import { h, icon, setScreen } from './ui';
+import { initVK } from './vk';
 
 const SOUND_WARNING_MS = 5000;
 
 let inRound = false;
 
 async function main() {
+  void initVK();
+  void preloadInterstitial();
   if (import.meta.env.DEV) Object.assign(window, { __audio: audio });
   trackViewport();
   const intro = await startScreen();

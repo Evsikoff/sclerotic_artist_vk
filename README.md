@@ -23,10 +23,15 @@ npm run build    # сборка в dist/, озвучка копируется т
 | `src/content.ts` | Раунды из `voiceover/manifest.json`, подписи «Диктует …» |
 | `src/answer.ts` | Сравнение ответа: без регистра, «е/ё», пунктуации и пробелов |
 | `src/progress.ts` | Прогресс в `localStorage` |
-| `src/ads.ts` | Заглушка рекламы |
+| `src/vk.ts` | VK Bridge: `VKWebAppInit` при запуске, если игра открыта во ВКонтакте |
+| `src/ads.ts` | Межстраничная реклама VK (`interstitial`) перед переигровкой пройденного раунда |
 | `video/tutorial/` | Обучающий ролик: сценарий (`SCRIPT.md`), запись экрана игры (`record_ui.mjs`), сцены из Gemini Omni и сборка `make_tutorial.py` |
 
 Номер ячейки в опросе вырезается из `dictation.mp3` по таймингам манифеста, поэтому в сборку попадают только `dictation.mp3` и `lines/*.wav` каждого раунда.
+
+## ВКонтакте
+
+Игра — VK Mini App. VK Bridge включается, только когда игра открыта во ВКонтакте (iframe или WebView с `vk_app_id` в адресе). Тогда при запуске уходит `VKWebAppInit` и `VKWebAppCheckNativeAds` для предзагрузки рекламы, а перед переигровкой раунда — `VKWebAppShowNativeAds` с `ad_format: 'interstitial'`. Если VK рекламу не показал, раунд всё равно начинается. В обычном браузере (`npm run dev`) реклама пропускается.
 
 ## Отладка
 

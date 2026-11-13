@@ -1,35 +1,22 @@
-import { h, icon, showLayer } from './ui';
+import { bridge, vkReady } from './vk';
 
-const STUB_SECONDS = 5;
+/** Просит VK заранее загрузить межстраничную рекламу, чтобы при переигровке она открылась сразу. */
+export async function preloadInterstitial(): Promise<void> {
+  if (!(await vkReady())) return;
+  await bridge.send('VKWebAppCheckNativeAds', { ad_format: 'interstitial' }).catch(() => {});
+}
 
 /**
- * Заглушка полноэкранной рекламы. Сюда подключается рекламный SDK:
- * промис должен завершиться, когда игрок закрыл рекламу.
+ * Межстраничная (interstitial) реклама VK перед переигровкой раунда.
+ * Промис завершается, когда игрок закрыл рекламу или VK не смог её показать:
+ * нет подходящей рекламы, лимит показов, игра открыта не во ВКонтакте. Игра продолжается в любом случае.
  */
-export function showFullscreenAd(): Promise<void> {
-  return new Promise((resolve) => {
-    let left = STUB_SECONDS;
-    const close = h('button', { class: 'ad-close', disabled: true, 'aria-label': 'Закрыть рекламу' }, String(left));
-    const layer = h(
-      'div',
-      { class: 'ad-stub' },
-      h('div', { class: 'ad-body' }, h('span', { class: 'ad-label' }, 'Реклама'), h('p', {}, 'Здесь будет полноэкранная реклама')),
-      close,
-    );
-    const timer = setInterval(() => {
-      left -= 1;
-      if (left > 0) {
-        close.textContent = String(left);
-        return;
-      }
-      clearInterval(timer);
-      close.disabled = false;
-      close.replaceChildren(icon('close'));
-    }, 1000);
-    close.addEventListener('click', () => {
-      layer.remove();
-      resolve();
-    });
-    showLayer(layer);
-  });
+export async function showFullscreenAd(): Promise<void> {
+  if (!(await vkReady())) return;
+  try {
+    await bridge.send('VKWebAppShowNativeAds', { ad_format: 'interstitial' });
+  } catch (error) {
+    console.info('Межстраничная реклама VK не показана', error);
+  }
+  void preloadInterstitial();
 }
