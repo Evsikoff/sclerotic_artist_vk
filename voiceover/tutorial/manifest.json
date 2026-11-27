@@ -1,0 +1,168 @@
+{
+  "round": 0,
+  "model": "gemini-3.8-flash-tts",
+  "sample_rate": 24000,
+  "narrator": {
+    "voice": "Laomedeia",
+    "gain_db": -5.5
+  },
+  "dictator": {
+    "voice": "Achird",
+    "persona": "Friendly apprentice",
+    "gain_db": 0.9,
+    "segmentation": {
+      "shortest_gap_s": 0.9,
+      "longest_inner_gap_s": 0.15
+    }
+  },
+  "number_pause_ms": 1000,
+  "cells": [
+    {
+      "cell": 1,
+      "word": "Дом",
+      "number_clip": "tutorial/numbers/01.mp3",
+      "number_ms": 870,
+      "word_clip": "tutorial/words/01.mp3",
+      "word_ms": 700
+    },
+    {
+      "cell": 2,
+      "word": "Яблоко",
+      "number_clip": "tutorial/numbers/02.mp3",
+      "number_ms": 940,
+      "word_clip": "tutorial/words/02.mp3",
+      "word_ms": 1010
+    },
+    {
+      "cell": 3,
+      "word": "Звезда",
+      "number_clip": "tutorial/numbers/03.mp3",
+      "number_ms": 580,
+      "word_clip": "tutorial/words/03.mp3",
+      "word_ms": 890
+    },
+    {
+      "cell": 4,
+      "word": "Лодка",
+      "number_clip": "tutorial/numbers/04.mp3",
+      "number_ms": 1460,
+      "word_clip": "tutorial/words/04.mp3",
+      "word_ms": 750
+    },
+    {
+      "cell": 5,
+      "word": "Улитка",
+      "number_clip": "tutorial/numbers/05.mp3",
+      "number_ms": 570,
+      "word_clip": "tutorial/words/05.mp3",
+      "word_ms": 900
+    }
+  ],
+  "lines": {
+    "welcome": {
+      "text": "Привет! Это обучение: пять слов, и никто не торопит. Разберёмся, как играть.",
+      "clip": "tutorial/lines/welcome.mp3",
+      "ms": 5290
+    },
+    "board": {
+      "text": "Вот поле — двадцать пять ячеек с номерами. Голос называет номер ячейки, а следом слово. Это слово нужно нарисовать в ячейке с таким номером.",
+      "clip": "tutorial/lines/board.mp3",
+      "ms": 10980
+    },
+    "listen": {
+      "text": "Слушайте!",
+      "clip": "tutorial/lines/listen.mp3",
+      "ms": 620
+    },
+    "tap_cell": {
+      "text": "Ячейка, которую назвали, загорается. Коснитесь её — она приблизится.",
+      "clip": "tutorial/lines/tap_cell.mp3",
+      "ms": 4780
+    },
+    "draw": {
+      "text": "Рисуйте прямо в ячейке: пальцем, а на компьютере — мышкой. Готово? Нажмите «Дальше».",
+      "clip": "tutorial/lines/draw.mp3",
+      "ms": 6970
+    },
+    "next": {
+      "text": "Следующая ячейка рядом. К ней ведёт кнопка со стрелкой внизу.",
+      "clip": "tutorial/lines/next.mp3",
+      "ms": 4330
+    },
+    "undo": {
+      "text": "Лишняя линия? «Отменить» уберёт последнюю. Нарисовали — жмите «Дальше».",
+      "clip": "tutorial/lines/undo.mp3",
+      "ms": 4960
+    },
+    "neighbor": {
+      "text": "Соседние ячейки видны по краям. Коснитесь той, что горит справа.",
+      "clip": "tutorial/lines/neighbor.mp3",
+      "ms": 4430
+    },
+    "draw_more": {
+      "text": "Рисуйте, а потом — «Дальше».",
+      "clip": "tutorial/lines/draw_more.mp3",
+      "ms": 2430
+    },
+    "zoom_out": {
+      "text": "Кнопка «Отдалить» снова показывает всё поле. Нажмите её.",
+      "clip": "tutorial/lines/zoom_out.mp3",
+      "ms": 4260
+    },
+    "tap_lit": {
+      "text": "Теперь коснитесь ячейки, которая горит.",
+      "clip": "tutorial/lines/tap_lit.mp3",
+      "ms": 2820
+    },
+    "keys": {
+      "text": "На компьютере по ячейкам можно ходить стрелками на клавиатуре, а клавиша Escape показывает всё поле.",
+      "clip": "tutorial/lines/keys.mp3",
+      "ms": 6810
+    },
+    "no_wait": {
+      "text": "В настоящем раунде голос не ждёт, пока вы дорисуете: после слова — задержка, и сразу звучит следующий номер.",
+      "clip": "tutorial/lines/no_wait.mp3",
+      "ms": 7230
+    },
+    "speaker": {
+      "text": "Отстали от голоса? Кнопка с динамиком перенесёт к ячейке, о которой он говорил последней.",
+      "clip": "tutorial/lines/speaker.mp3",
+      "ms": 6110
+    },
+    "final": {
+      "text": "Список закончился. В раунде после этого есть ещё тридцать секунд, чтобы дорисовать. Закончили раньше — жмите «Готово».",
+      "clip": "tutorial/lines/final.mp3",
+      "ms": 8630
+    },
+    "quiz": {
+      "text": "А теперь проверка памяти. Голос называет номер ячейки, вы смотрите на свой рисунок и вписываете слово. Не помните — жмите «Не помню».",
+      "clip": "tutorial/lines/quiz.mp3",
+      "ms": 10560
+    },
+    "right": {
+      "text": "Верно — плюс балл!",
+      "clip": "tutorial/lines/right.mp3",
+      "ms": 1460
+    },
+    "wrong": {
+      "text": "Ошиблись или не вспомнили — минус балл.",
+      "clip": "tutorial/lines/wrong.mp3",
+      "ms": 3550
+    },
+    "delay": {
+      "text": "И последнее — задержка. Это пауза между словом и следующим номером. В первых шести раундах она три секунды, с седьмого по десятый — две, а в последних шести — всего одна. Поэтому и выглядят эти раунды по-разному.",
+      "clip": "tutorial/lines/delay.mp3",
+      "ms": 15510
+    },
+    "finish": {
+      "text": "Обучение пройдено! Рисуйте понятно — и память не подведёт. Вперёд, к первому раунду!",
+      "clip": "tutorial/lines/finish.mp3",
+      "ms": 6450
+    },
+    "wrong_cell": {
+      "text": "Это не та ячейка. Нажмите «Отдалить» и коснитесь той, что горит.",
+      "clip": "tutorial/lines/wrong_cell.mp3",
+      "ms": 5160
+    }
+  }
+}

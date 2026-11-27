@@ -4,3 +4,5 @@ dist/
 voiceover/.state/
 # Кэш и журналы генерации обучающего видео
 video/tutorial/.state/
+# Ключ Gemini API
+gemini

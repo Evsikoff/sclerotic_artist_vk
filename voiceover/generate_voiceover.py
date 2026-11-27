@@ -1,8 +1,8 @@
 """Озвучка игры «Художник-склеротик» через Gemini TTS.
 
 Один вызов TTS читает весь раунд (25 номеров + 25 слов), дальше запись режется
-по паузам на отдельные клипы, а дорожка раунда собирается с паузами ровно в 1 секунду.
-В первых EASY_ROUNDS раундах после слова голос молчит 2 секунды: проще успеть нарисовать.
+по паузам на отдельные клипы, а дорожка раунда собирается заново: после номера ровно секунда тишины,
+после слова — задержка (DELAYS): 3 секунды в раундах 1–6, 2 секунды в 7–10 и 1 секунда в 11–16.
 
     set GEMINI_API_KEY=...
     python -X utf8 generate_voiceover.py generate --rounds 1-3
@@ -37,7 +37,9 @@ USAGE_LOG = BASE / ".state" / "usage_log.jsonl"
 MANIFEST = BASE / "manifest.json"
 VERIFICATION = BASE / "verification.json"
 
-API = "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent"
+# GEMINI_API_BASE — другой адрес с тем же API (прокси), если напрямую Google недоступен. Ключ идёт заголовком.
+API_BASE = os.environ.get("GEMINI_API_BASE", "https://generativelanguage.googleapis.com").rstrip("/")
+API = API_BASE + "/v1beta/models/{}:generateContent"
 MODELS = ["gemini-3.8-flash-tts", "gemini-3.1-flash-tts-preview", "gemini-3.8-flash-lite-tts"]
 VERIFY_MODEL = "gemini-3.8-flash"
 DAILY_LIMIT = 100
@@ -45,9 +47,8 @@ MAX_BLOCKED = 8  # 3.1-preview часто случайно отвечает fini
 MAX_REJECTED = 3  # брак нарезки оплачивается как полноценный дубль
 
 PAUSE_S = 1.0
-# Первые раунды проще: после слова пауза вдвое длиннее, после номера — та же секунда.
-EASY_ROUNDS = 10
-EASY_WORD_PAUSE_S = 2.0
+# Задержка — тишина после слова до следующего номера: (последний раунд, секунды). После номера всегда PAUSE_S.
+DELAYS = [(6, 3.0), (10, 2.0), (16, 1.0)]
 TARGET_RMS_DB = -20.0
 PEAK_LIMIT = 0.89  # -1 dBFS
 SILENCE_DB = -40.0
@@ -99,7 +100,7 @@ MODEL_OVERRIDES = {2: MODELS[0], 5: MODELS[0]}
 
 
 def word_pause_for(round_no):
-    return EASY_WORD_PAUSE_S if round_no <= EASY_ROUNDS else PAUSE_S
+    return next(seconds for last, seconds in DELAYS if round_no <= last)
 
 
 def model_for(round_no):
@@ -186,7 +187,9 @@ def retry_delay(error, default):
 
 def post(model, body):
     req = urllib.request.Request(API.format(model), data=json.dumps(body).encode(),
-                                 headers={"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]})
+                                 headers={"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"],
+                                          # Cloudflare (прокси на Workers) не пускает User-Agent «Python-urllib» (ошибка 1010).
+                                          "User-Agent": "sclerotic-artist-voiceover/1.0"})
     for attempt in range(1, 7):
         try:
             with urllib.request.urlopen(req, timeout=290) as r:

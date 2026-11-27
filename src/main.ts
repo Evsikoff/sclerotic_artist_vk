@@ -12,10 +12,9 @@ import introUrl from '../video/intro.mp4';
 import { preloadInterstitial, showFullscreenAd } from './ads';
 import { audio } from './audio';
 import { ROUNDS } from './content';
+import { playLesson } from './lesson';
 import { showMenu } from './menu';
-import { progress } from './progress';
-import { playRound } from './round';
-import { showTutorial } from './tutorial';
+import { playRound, type RoundExit } from './round';
 import { h, icon, setScreen } from './ui';
 import { initVK } from './vk';
 
@@ -114,18 +113,15 @@ function soundWarning(): Promise<void> {
 async function menuLoop() {
   audio.playMusic();
   for (;;) {
-    const choice = showMenu();
-    if (!progress.tutorialSeen) {
-      await showTutorial();
-      progress.markTutorialSeen();
-    }
-    const { round, replay } = await choice;
-    inRound = true;
+    // Обучающий ролик сам больше не включается: его открывают кнопкой в меню, а учит нулевой раунд.
+    const { round, replay } = await showMenu();
     audio.stopMusic();
     if (replay) await showFullscreenAd();
     let next: number | null = round;
     while (next !== null) {
-      const exit = await playRound(ROUNDS[next - 1]);
+      // Обучение ничего не отсчитывает и может спокойно продолжиться после сворачивания, как меню.
+      inRound = next > 0;
+      const exit: RoundExit = next === 0 ? await playLesson() : await playRound(ROUNDS[next - 1]);
       next = exit === 'menu' ? null : exit;
     }
     inRound = false;

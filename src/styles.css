@@ -33,10 +33,38 @@
 }
 
 /*
- * Сложные раунды (короткая пауза в диктовке) — в прохладной «ночной» гамме:
- * сам раунд, его итоги и его плашки в меню. Цвета холста — в board.ts.
+ * У раундов с разной задержкой (тишина после слова) — своя гамма: сам раунд, его итоги и его плашки в меню.
+ * Задержка 2 секунды (раунды 7–10) — основная тёплая «дневная» гамма из :root.
+ * Цвета холста — в PALETTES в board.ts.
  */
-.hard {
+
+/* Задержка 3 секунды, раунды 1–6: свежая «утренняя» мятная гамма. */
+.delay-3 {
+  --bg: #e8f2e8;
+  --paper: #fbfffb;
+  --line: #c9dfcd;
+  --ink: #1a2b26;
+  --ink-soft: #587068;
+  --accent: #127a6c;
+  --accent-dark: #0b544a;
+  --accent-shadow: rgba(11, 84, 74, 0.24);
+  --accent-tint: #dcf1ec;
+  --accent-track: rgba(18, 122, 108, 0.14);
+  --desk: #e1ece0;
+  --bar: rgba(244, 251, 245, 0.95);
+  --bar-shadow: rgba(30, 80, 60, 0.12);
+  --scrim: rgba(12, 40, 34, 0.56);
+  --badge: var(--accent);
+  --badge-ink: #fff;
+  --glow-warm: rgba(247, 197, 72, 0.32);
+  --glow-accent: rgba(18, 122, 108, 0.2);
+  --glow-cool: rgba(110, 200, 140, 0.2);
+  --glow-hot: rgba(240, 150, 70, 0.12);
+  color: var(--ink);
+}
+
+/* Задержка 1 секунда, раунды 11–16, сложные: прохладная «ночная» гамма. */
+.delay-1 {
   --bg: #e6eaf1;
   --paper: #fbfcff;
   --line: #cbd4e3;
@@ -430,6 +458,17 @@ button:disabled {
   box-shadow: 0 1px 0 var(--line);
 }
 
+.help-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.help-row .help-btn {
+  align-self: auto;
+}
+
 .score-star {
   display: grid;
   place-items: center;
@@ -485,6 +524,31 @@ button:disabled {
   line-height: 1.4;
   opacity: 0.9;
   margin-bottom: 12px;
+}
+
+.next-skip {
+  position: relative;
+  z-index: 1;
+  margin-top: 4px;
+  padding: 6px 2px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  opacity: 0.8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Задержка раунда: в карточке меню и на экране «Раунд N». */
+.delay-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 13px 5px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
 }
 
 .section-title {
@@ -809,6 +873,129 @@ button:disabled {
   font-size: 1.15rem;
   line-height: 1.45;
   opacity: 0.92;
+}
+
+/* ——— Обучение (раунд 0) ——— */
+
+/* Подсказка ведущего — второй строкой шапки; поле центрируется под ней. */
+.coach {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 8px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: 0 3px 0 var(--line);
+}
+
+.coach.pop {
+  animation: pop 0.35s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+
+.coach-voice {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 19px;
+}
+
+.coach.muted .coach-voice {
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+
+.coach-text {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.38;
+}
+
+.coach.muted .coach-text {
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+
+.coach-btn {
+  grid-column: 2;
+  justify-self: end;
+}
+
+/* Куда нажать: пульсирующее жёлтое кольцо вокруг кнопки. */
+.coach-target:not(:disabled) {
+  outline: 4px solid rgba(240, 168, 0, 1);
+  outline-offset: 2px;
+  animation: coach-ring 1.1s ease-in-out infinite;
+}
+
+@keyframes coach-ring {
+  50% {
+    outline-color: rgba(240, 168, 0, 0.5);
+    outline-offset: 5px;
+  }
+}
+
+.lesson-card {
+  overflow-y: auto;
+}
+
+.lesson-card .btn {
+  margin-top: 6px;
+}
+
+.delay-tiers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: min(100%, 420px);
+}
+
+.delay-tier {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 10px 6px 10px;
+  border-top: 6px solid var(--accent);
+  border-radius: 16px;
+  background: var(--paper);
+  color: var(--ink-soft);
+  box-shadow: 0 4px 0 var(--accent-dark);
+}
+
+.delay-tier .icon {
+  font-size: 22px;
+  color: var(--accent);
+}
+
+.delay-tier b {
+  font-family: var(--font-hand);
+  font-size: 2.3rem;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.delay-tier small {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.results-grid.lesson-grid {
+  flex: 0 0 auto;
+  min-height: 0;
+  max-height: none;
+  grid-template-rows: none;
+  grid-auto-rows: auto;
+}
+
+.results-grid.lesson-grid .res-thumb {
+  flex: none;
+  aspect-ratio: 1;
 }
 
 /* ——— Опрос ——— */

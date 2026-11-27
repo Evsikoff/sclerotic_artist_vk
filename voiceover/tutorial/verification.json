@@ -1,0 +1,188 @@
+{
+  "number 1": {
+    "expected": "Один",
+    "heard": "один",
+    "ok": true,
+    "delivery": "firm, clear, deep-voiced countdown tone"
+  },
+  "number 2": {
+    "expected": "Два",
+    "heard": "Два.",
+    "ok": true,
+    "delivery": "crisp, monotone counting tone"
+  },
+  "number 3": {
+    "expected": "Три",
+    "heard": "три,",
+    "ok": true,
+    "delivery": "firm, calm, deep counting tone"
+  },
+  "number 4": {
+    "expected": "Четыре",
+    "heard": "четыре",
+    "ok": true,
+    "delivery": "clear and measured Russian speech with rising tone"
+  },
+  "number 5": {
+    "expected": "Пять",
+    "heard": "пять",
+    "ok": true,
+    "delivery": "firm, clear, direct Russian number spoken crisply"
+  },
+  "word 1": {
+    "expected": "Дом",
+    "heard": "дом",
+    "ok": true,
+    "delivery": "monotone, low, flatly spoken with a deep tone"
+  },
+  "word 2": {
+    "expected": "Яблоко",
+    "heard": "яблоко.",
+    "ok": true,
+    "delivery": "Slow, clear pronunciation with deliberate emphasis."
+  },
+  "word 3": {
+    "expected": "Звезда",
+    "heard": "Звезда",
+    "ok": true,
+    "delivery": "neutral pronunciation of a single Russian word"
+  },
+  "word 4": {
+    "expected": "Лодка",
+    "heard": "лодка",
+    "ok": true,
+    "delivery": "calm and clear single word spoken"
+  },
+  "word 5": {
+    "expected": "Улитка",
+    "heard": "улитка",
+    "ok": true,
+    "delivery": "slowly, clearly spoken with a slight pause"
+  },
+  "line welcome": {
+    "expected": "Привет! Это обучение: пять слов, и никто не торопит. Разберёмся, как играть.",
+    "heard": "Привет! Это обучение. Пять слов, и никто не торопит. Разберемся, как играть?",
+    "ok": true,
+    "delivery": "Cheery, warm, and inviting female delivery, instructional tone."
+  },
+  "line board": {
+    "expected": "Вот поле — двадцать пять ячеек с номерами. Голос называет номер ячейки, а следом слово. Это слово нужно нарисовать в ячейке с таким номером.",
+    "heard": "Вот поле - двадцать пять ячеек с номерами. Голос называет номер ячейки, а следом - слово. Это слово нужно нарисовать в ячейке с таким номером.",
+    "ok": true,
+    "delivery": "Cheerfully and distinctly explaining instructions in a clear, friendly voice."
+  },
+  "line listen": {
+    "expected": "Слушайте!",
+    "heard": "Слушайте,",
+    "ok": true,
+    "delivery": "firm, calm, authoritative tone"
+  },
+  "line tap_cell": {
+    "expected": "Ячейка, которую назвали, загорается. Коснитесь её — она приблизится.",
+    "heard": "Ячейка, которую назвали, загорается. Коснитесь её, она приблизится.",
+    "ok": true,
+    "delivery": "Calm, clear instructional tone with distinct enunciation."
+  },
+  "line draw": {
+    "expected": "Рисуйте прямо в ячейке: пальцем, а на компьютере — мышкой. Готово? Нажмите «Дальше».",
+    "heard": "Рисуйте прямо в ячейке. Пальцем, а на компьютере мышкой. Готово? Нажмите «Дальше».",
+    "ok": true,
+    "delivery": "Cheerfully and instructively spoken in a warm tone."
+  },
+  "line next": {
+    "expected": "Следующая ячейка рядом. К ней ведёт кнопка со стрелкой внизу.",
+    "heard": "Следующая ячейка рядом, к ней ведет кнопка со стрелкой внизу.",
+    "ok": true,
+    "delivery": "clear, measured, and instructional female voice"
+  },
+  "line undo": {
+    "expected": "Лишняя линия? «Отменить» уберёт последнюю. Нарисовали — жмите «Дальше».",
+    "heard": "Лишняя линия? «Отменить» уберет последнюю. Нарисовали? Жмите «Дальше».",
+    "ok": true,
+    "delivery": "clear, friendly, and instructional tone, with a slight cheerful energy"
+  },
+  "line neighbor": {
+    "expected": "Соседние ячейки видны по краям. Коснитесь той, что горит справа.",
+    "heard": "Соседние ячейки видны по краям. Коснитесь той, что горит справа.",
+    "ok": true,
+    "delivery": "instructive, calm, steady tone, crisp female delivery"
+  },
+  "line draw_more": {
+    "expected": "Рисуйте, а потом — «Дальше».",
+    "heard": "Рисуйте, а потом дальше.",
+    "ok": true,
+    "delivery": "cheerful, instructional, gentle, calm and clearly enunciated"
+  },
+  "line zoom_out": {
+    "expected": "Кнопка «Отдалить» снова показывает всё поле. Нажмите её.",
+    "heard": "Кнопка «Отдалить» снова показывает всё поле. Нажмите её.",
+    "ok": true,
+    "delivery": "calm, instructional, clear, and slightly robotic"
+  },
+  "line tap_lit": {
+    "expected": "Теперь коснитесь ячейки, которая горит.",
+    "heard": "Теперь коснитесь ячейки, которая горит.",
+    "ok": true,
+    "delivery": "Calm and clear instructional female voice"
+  },
+  "line keys": {
+    "expected": "На компьютере по ячейкам можно ходить стрелками на клавиатуре, а клавиша Escape показывает всё поле.",
+    "heard": "На компьютере по ячейкам можно ходить стрелками на клавиатуре, а клавиша Escape показывает всё поле.",
+    "ok": true,
+    "delivery": "Cheerfully spoken with clear, friendly articulation."
+  },
+  "line no_wait": {
+    "expected": "В настоящем раунде голос не ждёт, пока вы дорисуете: после слова — задержка, и сразу звучит следующий номер.",
+    "heard": "В настоящем раунде голос не ждёт пока вы дорисуете. После слова задержка и сразу звучит следующий номер.",
+    "ok": true,
+    "delivery": "Clear, steady, instructional tone with distinct pauses."
+  },
+  "line speaker": {
+    "expected": "Отстали от голоса? Кнопка с динамиком перенесёт к ячейке, о которой он говорил последней.",
+    "heard": "Отстали от голоса? Кнопка с динамиком перенесёт к ячейке, о которой он говорил последней.",
+    "ok": true,
+    "delivery": "Cheerfully informative, bright and friendly, instructional."
+  },
+  "line final": {
+    "expected": "Список закончился. В раунде после этого есть ещё тридцать секунд, чтобы дорисовать. Закончили раньше — жмите «Готово».",
+    "heard": "Список закончился. В раунде после этого есть ещё 30 секунд, чтобы дорисовать. Закончили раньше, жмите \"Готово\".",
+    "ok": false,
+    "delivery": "Enthusiastic and clear Russian instructional delivery."
+  },
+  "line quiz": {
+    "expected": "А теперь проверка памяти. Голос называет номер ячейки, вы смотрите на свой рисунок и вписываете слово. Не помните — жмите «Не помню».",
+    "heard": "А теперь проверка памяти. Голос называет номер ячейки, вы смотрите на свой рисунок и вписываете слово. Не помните? Жмите «Не помню».",
+    "ok": true,
+    "delivery": "Cheerfully instruction-oriented, articulate, steady, slightly upbeat pacing."
+  },
+  "line right": {
+    "expected": "Верно — плюс балл!",
+    "heard": "Верно, плюс балл.",
+    "ok": true,
+    "delivery": "Cheerfully acknowledging a correct answer with praise."
+  },
+  "line wrong": {
+    "expected": "Ошиблись или не вспомнили — минус балл.",
+    "heard": "ошиблись или не вспомнили, минус балл.",
+    "ok": true,
+    "delivery": "firm, instructive, clear and educational Russian voice"
+  },
+  "line delay": {
+    "expected": "И последнее — задержка. Это пауза между словом и следующим номером. В первых шести раундах она три секунды, с седьмого по десятый — две, а в последних шести — всего одна. Поэтому и выглядят эти раунды по-разному.",
+    "heard": "И последнее - задержка. Это пауза между словом и следующим номером. В первых шести раундах она 3 секунды, с седьмого по десятый - две, а в последних шести - всего одна. Поэтому и выглядят эти раунды по-разному.",
+    "ok": false,
+    "delivery": "Clear, informative, upbeat tone with careful pauses."
+  },
+  "line finish": {
+    "expected": "Обучение пройдено! Рисуйте понятно — и память не подведёт. Вперёд, к первому раунду!",
+    "heard": "Обучение пройдено, рисуйте понятно, и память не подведёт. Вперёд, к первому раунду.",
+    "ok": true,
+    "delivery": "Cheerfully instruction, enthusiastic and encouraging delivery."
+  },
+  "line wrong_cell": {
+    "expected": "Это не та ячейка. Нажмите «Отдалить» и коснитесь той, что горит.",
+    "heard": "Это не та ячейка. Нажмите «Отдалить» и коснитесь той, что горит.",
+    "ok": true,
+    "delivery": "Clear, friendly instructional delivery with a calm, helpful tone."
+  }
+}
