@@ -13,11 +13,12 @@ interface Saved {
   /** Сумма баллов за все сыгранные раунды, включая переигровки. */
   score: number;
   rounds: Record<number, RoundRecord>;
-  tutorialSeen: boolean;
+  /** Нулевой раунд — обучение — пройден или пропущен. */
+  tutorialDone: boolean;
 }
 
 function load(): Saved {
-  const empty: Saved = { score: 0, rounds: {}, tutorialSeen: false };
+  const empty: Saved = { score: 0, rounds: {}, tutorialDone: false };
   try {
     const raw = localStorage.getItem(KEY);
     return raw ? { ...empty, ...JSON.parse(raw) } : empty;
@@ -41,16 +42,18 @@ export const progress = {
     return state.score;
   },
 
-  get tutorialSeen() {
-    return state.tutorialSeen;
+  /** Обучение нужно тем, кто его не проходил и ещё не сыграл ни одного раунда. */
+  get tutorialDone() {
+    return state.tutorialDone || Object.keys(state.rounds).length > 0;
   },
 
   record(round: number): RoundRecord | null {
     return state.rounds[round] ?? null;
   },
 
-  /** Раунды открываются по порядку: следующий — первый ещё не сыгранный. */
+  /** Раунды открываются по порядку: сначала обучение (раунд 0), потом первый ещё не сыгранный. */
   nextRound(): number | null {
+    if (!this.tutorialDone) return 0;
     return ROUNDS.find((r) => !state.rounds[r.round])?.round ?? null;
   },
 
@@ -66,8 +69,8 @@ export const progress = {
     save();
   },
 
-  markTutorialSeen() {
-    state.tutorialSeen = true;
+  markTutorialDone() {
+    state.tutorialDone = true;
     save();
   },
 };

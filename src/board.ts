@@ -36,8 +36,21 @@ export interface Palette {
   highlight: string;
 }
 
+/** Гамма поля по задержке раунда, как .delay-3 / .delay-2 / .delay-1 в styles.css. */
 export const PALETTES = {
-  normal: {
+  /** Задержка 3 секунды: свежая «утренняя» мятная гамма. */
+  3: {
+    desk: '#e1ece0',
+    board: '#c4dac6',
+    paper: '#fcfffb',
+    shadow: 'rgba(24, 74, 52, 0.2)',
+    number: '#8ba596',
+    numberFocused: '#127a6c',
+    ink: 'rgba(22, 20, 28, 0.93)',
+    highlight: '246, 172, 30',
+  },
+  /** Задержка 2 секунды: основная тёплая «дневная» гамма игры. */
+  2: {
     desk: '#efe4cf',
     board: '#e2d0ae',
     paper: '#fffdf8',
@@ -47,8 +60,8 @@ export const PALETTES = {
     ink: 'rgba(22, 20, 28, 0.93)',
     highlight: '246, 172, 30',
   },
-  /** Сложные раунды: прохладная «ночная» гамма, как .hard в styles.css. */
-  hard: {
+  /** Задержка 1 секунда, сложные раунды: прохладная «ночная» гамма. */
+  1: {
     desk: '#dde3ec',
     board: '#bfcbdb',
     paper: '#fcfdff',
@@ -58,7 +71,7 @@ export const PALETTES = {
     ink: 'rgba(22, 20, 28, 0.93)',
     highlight: '246, 172, 30',
   },
-} satisfies Record<string, Palette>;
+} satisfies Record<1 | 2 | 3, Palette>;
 
 /** Камера: какая точка мира (x, y) стоит в точке экрана (sx, sy) и с каким увеличением z. */
 interface Camera {
@@ -139,7 +152,7 @@ function drawCell(c: CanvasRenderingContext2D, colors: Palette, number: number, 
 }
 
 /** Отдельная картинка ячейки — для итогов раунда. */
-export function renderThumb(strokes: Stroke[], number: number, colors: Palette = PALETTES.normal, size = 200): HTMLCanvasElement {
+export function renderThumb(strokes: Stroke[], number: number, colors: Palette = PALETTES[2], size = 200): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = size;
   const c = canvas.getContext('2d')!;
@@ -185,7 +198,7 @@ export class Board {
 
   constructor(
     private readonly canvas: HTMLCanvasElement,
-    readonly colors: Palette = PALETTES.normal,
+    readonly colors: Palette = PALETTES[2],
   ) {
     this.ctx = canvas.getContext('2d')!;
     this.layerCtx = this.layer.getContext('2d')!;

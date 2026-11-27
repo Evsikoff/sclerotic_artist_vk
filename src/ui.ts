@@ -30,6 +30,9 @@ const ICONS = {
   star: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9z" fill="currentColor"/>',
   close: '<path d="M18 6 6 18M6 6l12 12"/>',
   help: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.4c-.6.3-1 .8-1 1.5v.5"/><path d="M12 16.9v.2"/>',
+  clock: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M10 2.5h4"/>',
+  film: '<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><path d="m10.5 9.5 4 2.5-4 2.5z" fill="currentColor"/>',
+  pencil: '<path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="m14 7 3 3"/>',
 };
 
 export function icon(name: keyof typeof ICONS): SVGElement {
@@ -59,5 +62,8 @@ export function plural(n: number, forms: [string, string, string]): string {
 }
 
 export const points = (n: number) => plural(n, ['балл', 'балла', 'баллов']);
+
+/** «1 секунда», «3 секунды». */
+export const seconds = (n: number) => `${n} ${plural(n, ['секунда', 'секунды', 'секунд'])}`;
 
 export const signed = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : '0');

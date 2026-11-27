@@ -3,8 +3,13 @@ import manifestJson from '../voiceover/manifest.json';
 /** Сколько ячеек игра спрашивает после рисования. */
 export const QUIZ_SIZE = 9;
 
-/** Раунды, где после слова голос молчит не дольше этого, — сложные. */
-const HARD_WORD_PAUSE_MS = 1000;
+/**
+ * Задержка — сколько секунд голос молчит после слова, прежде чем назвать следующий номер:
+ * 3 в раундах 1–6, 2 в 7–10 и 1 в 11–16. У раундов с разной задержкой своё оформление (класс delayClass).
+ */
+export type Delay = 1 | 2 | 3;
+
+export const delayClass = (delay: Delay) => `delay-${delay}`;
 
 interface ManifestRound {
   round: number;
@@ -32,8 +37,8 @@ export interface RoundInfo {
   dictationMs: number;
   /** Сколько голос молчит между номером и словом. */
   numberPauseMs: number;
-  /** Сложный раунд: короткая пауза после слова и своя цветовая гамма. */
-  hard: boolean;
+  /** Задержка после слова, секунды. */
+  delay: Delay;
   time30sUrl: string;
   quizIntroUrl: string;
   /** Звучит вместо quizIntro, если игрок нажал «Готово» до конца 30 секунд. */
@@ -74,7 +79,7 @@ export const ROUNDS: RoundInfo[] = Object.values(manifest.rounds)
     dictationUrl: voiceover(r.dictation),
     dictationMs: r.dictation_ms,
     numberPauseMs: r.number_pause_ms,
-    hard: r.word_pause_ms <= HARD_WORD_PAUSE_MS,
+    delay: Math.min(3, Math.max(1, Math.round(r.word_pause_ms / 1000))) as Delay,
     time30sUrl: voiceover(r.lines.time_30s.clip),
     quizIntroUrl: voiceover(r.lines.quiz_intro.clip),
     quizIntroEarlyUrl: voiceover(r.lines.quiz_intro_early.clip),

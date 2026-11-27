@@ -1,9 +1,10 @@
 import { isCorrect } from './answer';
 import { audio, type Voice } from './audio';
 import { Board, CELLS, GRID, PALETTES, renderThumb } from './board';
-import { QUIZ_SIZE, type RoundInfo } from './content';
+import { QUIZ_SIZE, delayClass, type RoundInfo } from './content';
+import { askCell, buildHud, nextCellFrom, showAnswerFeedback, updateToolButtons, type Hud } from './hud';
 import { progress } from './progress';
-import { h, icon, plural, points, setScreen, signed } from './ui';
+import { h, icon, plural, points, seconds, setScreen, signed } from './ui';
 
 const FINAL_SECONDS = 30;
 const URGENT_SECONDS = 5;
@@ -96,78 +97,6 @@ class Track {
   }
 }
 
-function toolButton(name: Parameters<typeof icon>[0], label: string, onclick: () => void) {
-  return h('button', { class: 'tool', onclick }, icon(name), h('span', {}, label));
-}
-
-interface HudActions {
-  menu(): void;
-  done(): void;
-  undo(): void;
-  zoomOut(): void;
-  spoken(): void;
-  next(): void;
-  repeat(): void;
-}
-
-type Hud = ReturnType<typeof buildHud>;
-
-function buildHud(info: RoundInfo, act: HudActions) {
-  const canvas = h('canvas', { class: 'board' });
-  const caption = h('div', { class: 'hud-caption' }, `Раунд ${info.round}`);
-  const status = h('div', { class: 'hud-status' }, 'Приготовьтесь');
-  const done = h('button', { class: 'btn btn-green btn-small', hidden: true, onclick: act.done }, icon('check'), 'Готово');
-  const bar = h('i');
-  const progressBar = h('div', { class: 'hud-progress' }, bar);
-  const menu = h('button', { class: 'icon-btn', 'aria-label': 'Пауза', onclick: act.menu }, icon('pause'));
-  const soundHint = h('div', { class: 'sound-hint', hidden: true }, icon('speaker'), 'Коснитесь экрана, чтобы вернуть звук');
-  const top = h('header', { class: 'hud-top' }, menu, h('div', { class: 'hud-center' }, caption, status), done, progressBar, soundHint);
-
-  const undo = toolButton('undo', 'Отменить', act.undo);
-  const zoom = toolButton('grid', 'Отдалить', act.zoomOut);
-  const spoken = toolButton('speaker', '', act.spoken);
-  spoken.title = 'К ячейке, о которой голос говорил последней';
-  const next = toolButton('arrow', '', act.next);
-  const tools = h('footer', { class: 'hud-bottom', hidden: true }, undo, zoom, spoken, next);
-
-  const question = h('div', { class: 'quiz-question' });
-  const input = h('input', {
-    class: 'quiz-input',
-    type: 'text',
-    placeholder: 'Ваш ответ',
-    autocomplete: 'off',
-    autocapitalize: 'none',
-    autocorrect: 'off',
-    spellcheck: 'false',
-    enterkeyhint: 'send',
-    maxlength: 60,
-  });
-  // Форма никогда не отправляется по-настоящему: ответ принимает ask().
-  const form = h(
-    'form',
-    { class: 'quiz-form', onsubmit: (e: Event) => e.preventDefault() },
-    input,
-    h('button', { class: 'btn', type: 'submit' }, 'Ответить'),
-  );
-  const dunno = h('button', { class: 'link-btn', type: 'button' }, 'Не помню');
-  const feedback = h('div', { class: 'quiz-feedback', hidden: true });
-  const quiz = h(
-    'div',
-    { class: 'quiz-panel', hidden: true },
-    h(
-      'div',
-      { class: 'quiz-head' },
-      question,
-      h('button', { class: 'icon-btn', type: 'button', 'aria-label': 'Повторить номер', onclick: act.repeat }, icon('speaker')),
-    ),
-    form,
-    dunno,
-    feedback,
-  );
-
-  return { canvas, caption, status, done, bar, progressBar, menu, soundHint, top, undo, zoom, spoken, next, tools, quiz, question, input, form, dunno, feedback };
-}
-
 /**
  * Один раунд от экранов подготовки до итогов.
  * Рисование (диктовка и 30 секунд) идёт по настоящим часам, и остановить его нельзя.
@@ -201,7 +130,7 @@ class RoundSession {
   constructor(private readonly info: RoundInfo) {
     this.cancelled = new Promise<never>((_, reject) => (this.cancel = () => reject(new Aborted())));
     this.cancelled.catch(() => {});
-    this.ui = buildHud(info, {
+    this.ui = buildHud(`Раунд ${info.round}`, {
       menu: () => (this.drawing ? this.confirmExit() : this.pause()),
       done: () => this.endPhase?.(),
       undo: () => this.board.undo(),
@@ -213,10 +142,10 @@ class RoundSession {
       next: () => this.board.focus(this.nextCell()),
       repeat: () => this.sayNumber(this.quizCell),
     });
-    this.board = new Board(this.ui.canvas, info.hard ? PALETTES.hard : PALETTES.normal);
+    this.board = new Board(this.ui.canvas, PALETTES[info.delay]);
     this.board.onChange = () => this.updateTools();
     const { canvas, top, tools, quiz } = this.ui;
-    this.root = h('div', { class: `screen round${info.hard ? ' hard' : ''}` }, canvas, top, tools, quiz);
+    this.root = h('div', { class: `screen round ${delayClass(info.delay)}` }, canvas, top, tools, quiz);
     // Телефон может вернуть звук только по нажатию — во время рисования об этом просит подсказка soundHint.
     this.root.addEventListener(
       'pointerdown',
@@ -272,8 +201,9 @@ class RoundSession {
 
     show(
       '',
-      h('div', { class: 'ready-kicker' }, this.info.hard ? 'Сложный раунд' : 'Раунд'),
+      h('div', { class: 'ready-kicker' }, this.info.delay === 1 ? 'Сложный раунд' : 'Раунд'),
       h('div', { class: 'ready-number' }, String(this.info.round)),
+      h('div', { class: 'delay-chip' }, icon('clock'), `Задержка ${seconds(this.info.delay)}`),
       h('p', {}, `Диктует ${this.info.narrator}`),
     );
     await this.waitOrTap(2200, card);
@@ -283,7 +213,8 @@ class RoundSession {
       h(
         'p',
         {},
-        `Голос назовёт номер ячейки, а через ${pauseWords(this.info.numberPauseMs)} — слово. Нарисуйте это слово в ячейке с таким номером.`,
+        `Голос назовёт номер ячейки, а через ${pauseWords(this.info.numberPauseMs)} — слово. Нарисуйте это слово в ячейке с таким номером. ` +
+          `После слова — задержка ${seconds(this.info.delay)}, и звучит следующий номер.`,
       ),
     );
     await this.waitOrTap(3800, card);
@@ -370,7 +301,7 @@ class RoundSession {
       this.ui.bar.style.width = `${(i / cells.length) * 100}%`;
       this.quizCell = cell;
       this.board.focus(cell);
-      const reply = this.ask(cell);
+      const reply = askCell(this.ui, cell);
       this.sayNumber(cell);
       const answer = await this.guard(reply);
       const word = this.info.cells[cell].word;
@@ -378,7 +309,7 @@ class RoundSession {
       score += ok ? 1 : -1;
       answers.push({ cell, word, answer, ok });
       audio.sfx(ok ? 'correct' : 'wrong');
-      this.showFeedback(ok, word);
+      showAnswerFeedback(this.ui, ok, word);
       this.ui.status.textContent = `Счёт: ${signed(score)}`;
       await this.waitOrTap(ok ? 1300 : 2600, this.ui.quiz);
     }
@@ -449,39 +380,6 @@ class RoundSession {
   }
 
   // ——— Опрос ———
-
-  private ask(cell: number): Promise<string | null> {
-    const { question, input, form, dunno, feedback } = this.ui;
-    question.replaceChildren('Что было в ячейке ', h('b', {}, `№${cell + 1}`), '?');
-    input.value = '';
-    input.readOnly = false;
-    dunno.hidden = false;
-    feedback.hidden = true;
-    input.focus({ preventScroll: true });
-    return new Promise((resolve) => {
-      const settle = (answer: string | null) => {
-        form.onsubmit = null;
-        dunno.onclick = null;
-        // Поле остаётся в фокусе, чтобы клавиатура телефона не прыгала между вопросами.
-        input.readOnly = true;
-        resolve(answer);
-      };
-      form.onsubmit = () => {
-        const text = input.value.trim();
-        if (text) settle(text);
-        else input.focus();
-      };
-      dunno.onclick = () => settle(null);
-    });
-  }
-
-  private showFeedback(ok: boolean, word: string) {
-    const { dunno, feedback } = this.ui;
-    dunno.hidden = true;
-    feedback.hidden = false;
-    feedback.className = `quiz-feedback ${ok ? 'ok' : 'bad'}`;
-    feedback.textContent = ok ? 'Верно! +1' : `Правильный ответ: «${word}». −1`;
-  }
 
   private sayNumber(cell: number) {
     if (!this.sound) return;
@@ -563,8 +461,7 @@ class RoundSession {
 
   /** Куда ведёт кнопка со стрелкой: на следующую ячейку, а с общего вида — на ту, что диктуют. */
   private nextCell() {
-    const focused = this.board.focused;
-    return focused === null ? (this.highlight ?? 0) : (focused + 1) % CELLS;
+    return nextCellFrom(this.board.focused, this.highlight, CELLS);
   }
 
   /** Ячейка, о которой голос уже договорил: пока он диктует №25, это №24, а после диктовки — №25. */
@@ -574,16 +471,14 @@ class RoundSession {
   }
 
   private updateTools() {
-    const { undo, zoom, spoken, next } = this.ui;
     const focused = this.board.focused;
-    const said = this.spokenCell();
-    undo.disabled = !this.board.canUndo();
-    zoom.disabled = focused === null;
-    spoken.disabled = said === null || said === focused;
-    spoken.querySelector('span')!.textContent = said === null ? '№—' : `№${said + 1}`;
-    next.querySelector('span')!.textContent = `№${this.nextCell() + 1}`;
-    // С правого края следующая ячейка — в начале нового ряда, рядом её не видно: подсказываем кнопку.
-    next.classList.toggle('hint', focused !== null && focused % GRID === GRID - 1);
+    updateToolButtons(this.ui, {
+      canUndo: this.board.canUndo(),
+      focused,
+      spoken: this.spokenCell(),
+      next: this.nextCell(),
+      rowEnd: focused !== null && focused % GRID === GRID - 1,
+    });
   }
 
   private syncInsets() {
